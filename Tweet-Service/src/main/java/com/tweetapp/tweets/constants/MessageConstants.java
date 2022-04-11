@@ -11,7 +11,7 @@ public final class MessageConstants {
 	public static final String SAVE_SERVICE_ERROR = "Error Occurs in Save Service Call";
 	public static final String FETCH_SERVICE_ERROR = "Error Occurs in Fetch Service Call";
 	public static final String DELETE_SERVICE_ERROR = "Error Occurs in Delete Service Call";
-	public static final String USER_NAME_ALREADY_EXISTS = "User Name Arleady Exists.";
+	public static final String USER_NAME_ALREADY_EXISTS= "User Name Arleady Exists.";
 
 	public static final String USER_REGISTRATION_SERVICE_METHOD_NAME = "userRegistrationService";
 	public static final String USER_LOGGEDIN_SERVICE_METHOD_NAME = "userLoggedInService";
@@ -24,14 +24,14 @@ public final class MessageConstants {
 	public static final String GET_LOGIN_USER_DETAILS_METHOD_NAME = "getLoginUserDetails";
 	public static final String GET_USER_DETAILS_BY_NAME_METHOD_NAME = "getUserDetailsByName";
 	public static final String GET_ALL_REGISTERED_USER = "getALLRegisteredUser";
-
-	public static final String GET_ALL_TWEETS_BY_USER_NAME = "getAllTweetsByUserName";
-	public static final String ADD_TWEETS = "addTweet";
-	public static final String UPDATE_TWEET = "updateTweet";
-	public static final String DELETE_UPDATE = "deleteTweet";
-	public static final String LIKE_TWEET = "likeTweet";
-	public static final String REPLY_TWEET = "replyTweet";
-	public static final String GET_ALL_TWEETS = "getALLTweets";
-	public static final String SAVE_TWEET_DETAILS = "saveTweetDetails";
-	public static final String DELETE_TWEET_BY_ID = "deleteTweetById";
+	
+	public static final String GET_ALL_TWEETS_BY_USER_NAME= "getAllTweetsByUserName";
+	public static final String ADD_TWEETS= "addTweet";
+	public static final String UPDATE_TWEET= "updateTweet";
+	public static final String DELETE_UPDATE= "deleteTweet";
+	public static final String LIKE_TWEET= "likeTweet";
+	public static final String REPLY_TWEET= "replyTweet";
+	public static final String GET_ALL_TWEETS="getALLTweets";
+	public static final String SAVE_TWEET_DETAILS="saveTweetDetails";
+	public static final String DELETE_TWEET_BY_ID="deleteTweetById";
 }

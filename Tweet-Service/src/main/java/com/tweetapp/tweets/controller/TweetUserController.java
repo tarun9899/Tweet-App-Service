@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import com.tweetapp.tweets.service.TweetUserService;
 
 @RestController
 @RequestMapping("/api/v1.0/tweets")
+
 public class TweetUserController {
 
 	@Autowired
@@ -34,6 +36,7 @@ public class TweetUserController {
 	@Autowired
 	public MessageServiceResponse messageService;
 
+	@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(value = "/register")
 	public ResponseEntity<MessageDTO> userRegistrationService(@RequestBody UserEntity user) throws ErrorException {
 		try {
@@ -45,6 +48,7 @@ public class TweetUserController {
 		}
 	}
 
+	@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(value = "/login")
 	public ResponseEntity<MessageDTO> userLoggedInService(@RequestBody UserEntity user) throws ErrorException {
 		try {
@@ -56,6 +60,7 @@ public class TweetUserController {
 		}
 	}
 
+	@CrossOrigin(origins="http://localhost:4200")
 	@PutMapping(value = "/{username}/forgot")
 	public ResponseEntity<MessageDTO> userResetPasswordService(@RequestBody UserEntity password,
 			@PathVariable String username) throws ErrorException {
@@ -68,6 +73,7 @@ public class TweetUserController {
 		}
 	}
 
+	@CrossOrigin(origins="http://localhost:4200")
 	@GetMapping(value = "/users/all")
 	public ResponseEntity<?> getAllRegistartionUser() throws ErrorException {
 		try {
@@ -78,15 +84,13 @@ public class TweetUserController {
 		}
 	}
 
+	@CrossOrigin(origins="http://localhost:4200")
 	@GetMapping(value = "/users/search/{username}")
 	public ResponseEntity<Optional<UserEntity>> getUserByUserName(@PathVariable String username) throws ErrorException {
-		try {
+		
 			Optional<UserEntity> users = userService.getUserDetailsByName(username);
 			return ResponseEntity.ok().body(users);
-		} catch (Exception e) {
-			throw new ErrorException(e.getMessage(), MessageConstants.FETCH_SERVICE_ERROR,
-					MessageConstants.GET_USER_BY_USERNAME_METHOD_NAME);
-		}
+			
+		
 	}
-
 }

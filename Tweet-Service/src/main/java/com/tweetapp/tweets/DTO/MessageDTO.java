@@ -2,20 +2,25 @@ package com.tweetapp.tweets.DTO;
 
 public class MessageDTO {
  public int messageCode;
- public String message;
-
+ public String successMessage;
+ public String errorMessage;
 public int getMessageCode() {
 	return messageCode;
 }
 public void setMessageCode(int messageCode) {
 	this.messageCode = messageCode;
 }
-public String getMessage() {
-	return message;
+public String getSuccessMessage() {
+	return successMessage;
 }
-public void setMessage(String message) {
-	this.message = message;
+public void setSuccessMessage(String successMessage) {
+	this.successMessage = successMessage;
 }
-
+public String getErrorMessage() {
+	return errorMessage;
+}
+public void setErrorMessage(String errorMessage) {
+	this.errorMessage = errorMessage;
+}
  
 }

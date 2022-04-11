@@ -9,7 +9,7 @@ public class MessageServiceResponse {
 	
 	public MessageDTO messageDetails(String message,int messageCode) {
 		MessageDTO messageResponse = new MessageDTO();
-		messageResponse.setMessage(message);
+		messageResponse.setSuccessMessage(message);
 		messageResponse.setMessageCode(messageCode);
 		return messageResponse;
 	}

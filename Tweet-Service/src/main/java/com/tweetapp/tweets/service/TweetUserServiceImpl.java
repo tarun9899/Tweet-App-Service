@@ -6,18 +6,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tweetapp.tweets.DAO.TweetUserRepository;
-
 import com.tweetapp.tweets.DTO.MessageDTO;
+//import com.tweetapp.tweets.DTO.PasswordResetDTO;
 import com.tweetapp.tweets.common.MessageServiceResponse;
 import com.tweetapp.tweets.constants.MessageConstants;
-
+import com.tweetapp.tweets.DAO.TweetUserRepository;
 import com.tweetapp.tweets.entity.UserEntity;
 import com.tweetapp.tweets.exception.ErrorException;
 
 @Service
 public class TweetUserServiceImpl implements TweetUserService {
-
 
 	@Autowired
 	public TweetUserRepository userRepository;
