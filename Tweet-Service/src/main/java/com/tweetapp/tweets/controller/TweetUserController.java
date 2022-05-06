@@ -27,7 +27,7 @@ import com.tweetapp.tweets.service.TweetUserService;
 
 @RestController
 @RequestMapping("/api/v1.0/tweets")
-
+@CrossOrigin(origins="*")
 public class TweetUserController {
 
 	@Autowired
@@ -36,7 +36,7 @@ public class TweetUserController {
 	@Autowired
 	public MessageServiceResponse messageService;
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(value = "/register")
 	public ResponseEntity<MessageDTO> userRegistrationService(@RequestBody UserEntity user) throws ErrorException {
 		try {
@@ -48,7 +48,7 @@ public class TweetUserController {
 		}
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(value = "/login")
 	public ResponseEntity<MessageDTO> userLoggedInService(@RequestBody UserEntity user) throws ErrorException {
 		try {
@@ -60,7 +60,7 @@ public class TweetUserController {
 		}
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@PutMapping(value = "/{username}/forgot")
 	public ResponseEntity<MessageDTO> userResetPasswordService(@RequestBody UserEntity password,
 			@PathVariable String username) throws ErrorException {
@@ -73,7 +73,7 @@ public class TweetUserController {
 		}
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:7001")
 	@GetMapping(value = "/users/all")
 	public ResponseEntity<?> getAllRegistartionUser() throws ErrorException {
 		try {
@@ -84,11 +84,11 @@ public class TweetUserController {
 		}
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@GetMapping(value = "/users/search/{username}")
-	public ResponseEntity<Optional<UserEntity>> getUserByUserName(@PathVariable String username) throws ErrorException {
+	public ResponseEntity<UserEntity> getUserByUserName(@PathVariable String username) throws ErrorException {
 		
-			Optional<UserEntity> users = userService.getUserDetailsByName(username);
+			UserEntity users = userService.getUserDetailsByName(username);
 			return ResponseEntity.ok().body(users);
 			
 		

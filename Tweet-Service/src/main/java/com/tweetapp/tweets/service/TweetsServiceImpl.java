@@ -1,5 +1,6 @@
 package com.tweetapp.tweets.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -43,20 +44,7 @@ public class TweetsServiceImpl implements TweetsService {
 	@Override
 	public List<TweetEntity> getALLTweets() throws ErrorException {
 		try {
-//			List<TweetCommentEnitiy> tweetCommValue = commentRepository.findAll();
-//			List<TweetEntity> tweetValue = tweetsRepository.findAll();
-//			for(TweetCommentEnitiy tweetComm : tweetCommValue) {
-//				 System.out.println("size comm - " + tweetCommValue.size());
-////				for(TweetEntity tweetVal : tweetValue) {
-//					 System.out.println("tweet size - " + tweetValue.size());
-//					if() {
-//				      System.out.println("id - " + tweetComm.getTweetId());
-//				      commentRepository.deleteById(tweetComm.getTweetId());
-//					}
-//				//}
-//			}
-//			
-			return tweetsRepository.findAll();
+			return tweetsRepository.tweetFindALLDetails();
 		} catch (Exception e) {
 			throw new ErrorException(e.getMessage(), MessageConstants.FETCH_SERVICE_ERROR,
 					MessageConstants.GET_ALL_TWEETS);
@@ -65,14 +53,16 @@ public class TweetsServiceImpl implements TweetsService {
 	}
 
 	@Override
-	public Optional<TweetEntity> getTweetsByUserName(String username) throws ErrorException {
+	public List<TweetEntity> getTweetsByUserName(String username) throws ErrorException {
 
 		try {
 			List<UserEntity> userList = tweetUserService.getALLRegisteredUser();
 			for (UserEntity users : userList) {
 				if (users.getUserName().equals(username)) {
-					System.out.println("id - " + users.getUserId());
-					return tweetsRepository.findById(users.getUserId());
+					return tweetsRepository.tweetFindALLDetails();
+				}
+				else {
+					List<TweetEntity> array = new ArrayList<>();
 				}
 			}
 		} catch (Exception e) {
@@ -87,10 +77,9 @@ public class TweetsServiceImpl implements TweetsService {
 			throws ErrorException {
 		try {
 			int tweetUpdatedId = 0;
-			List<TweetEntity> tweetlist = tweetsRepository.findAll();
+			List<TweetEntity> tweetlist = tweetsRepository.tweetFindALLDetails();
 			for (TweetEntity tweetValue : tweetlist) {
-				tweetUpdatedId = tweetValue.getTweetId();
-				System.out.println("ID -" + tweetUpdatedId);
+				tweetUpdatedId = tweetlist.size();
 			}
 			switch (action) {
 			case MessageConstants.ADD_TWEETS:
@@ -99,17 +88,17 @@ public class TweetsServiceImpl implements TweetsService {
 					if (userEnt.getUserName().equals(username)) {
 						tweets.setTweetId(tweetUpdatedId + 1);
 						tweets.setUserId(userEnt.getUserId());
-						return tweetsRepository.save(tweets);
+						return tweetsRepository.tweetSaveDetails(tweets);
 					}
 				}
 				break;
 			case MessageConstants.UPDATE_TWEET:
-				List<TweetEntity> tweetlist1 = tweetsRepository.findAll();
+				List<TweetEntity> tweetlist1 = tweetsRepository.tweetFindALLDetails();
 				for (TweetEntity tweetValue : tweetlist1) {
 					System.out.println(id + tweetValue.getTweetId() == id);
 					if (tweetValue.getTweetId() == id) {
 						tweetValue.setTweets(tweets.getTweets());
-						return tweetsRepository.save(tweetValue);
+						return tweetsRepository.tweetSaveDetails(tweets);
 					}
 				}
 				break;
@@ -123,22 +112,38 @@ public class TweetsServiceImpl implements TweetsService {
 	}
 
 	@Override
-	public void deleteTweetById(int id) throws ErrorException {
+	public void deleteTweetById(int id,String tweet) throws ErrorException {
 		try {
-			List<TweetCommentEnitiy> tweetCommValue = commentRepository.findAll();
-			for (TweetCommentEnitiy tweetVal : tweetCommValue) {
-				if (tweetVal.getTweetId() == id) {
-			       commentRepository.deleteById(tweetVal.getTweetId());
+			int tweetCommentID = 0;
+			List<TweetCommentEnitiy> tweetCommValue = commentRepository.tweetCommentFindALLDetails();
+			for (TweetCommentEnitiy tweetComVal : tweetCommValue) {
+//				List<TweetEntity> tweetsValues1 = tweetsRepository.tweetFindALLDetails();
+//				for (TweetEntity tweetValuess : tweetsValues1) {
+					if (tweet.equals(tweetComVal.getComment())) {
+						tweetCommentID = tweetComVal.getTweetId();
+						commentRepository.deleteById(tweetComVal);
+					//}
+					
 				}
 			}
-			List<TweetLikeEntity> tweetLikeValue = likeRepository.findAll();
-			for(TweetLikeEntity tweetLikeVal : tweetLikeValue) 
-			{
+
+			List<TweetLikeEntity> tweetLikeValue = likeRepository.tweetLikeFindALLDetails();
+			for (TweetLikeEntity tweetLikeVal : tweetLikeValue) {
 				if (tweetLikeVal.getTweetId() == id) {
-				likeRepository.deleteById(id);
+					likeRepository.deleteById(tweetLikeVal);
 				}
 			}
-			tweetsRepository.deleteById(id);
+			List<TweetEntity> tweetsValues = tweetsRepository.tweetFindALLDetails();
+			for (TweetEntity tweetValue : tweetsValues) {
+				if (tweetValue.getTweetId() == id) {
+					tweetsRepository.deleteById(tweetValue);
+					
+				}
+				if (tweetValue.getTweetId() == tweetCommentID) {
+					tweetValue.setCommentTweetsCount(tweetValue.getCommentTweetsCount() - 1);
+					tweetsRepository.tweetSaveDetails(tweetValue);
+				}
+			}
 		} catch (Exception e) {
 			throw new ErrorException(e.getMessage(), MessageConstants.DELETE_SERVICE_ERROR,
 					MessageConstants.DELETE_TWEET_BY_ID);
@@ -153,9 +158,9 @@ public class TweetsServiceImpl implements TweetsService {
 		int tweetLikeCount = 0;
 		int tweetDislikeCount = 0;
 		boolean userAlreadyExistsFlag = false;
-		List<TweetLikeEntity> tweetLikeList = likeRepository.findAll();
+		List<TweetLikeEntity> tweetLikeList = likeRepository.tweetLikeFindALLDetails();
 		for (TweetLikeEntity tweetLikeValue : tweetLikeList) {
-			tweetLikeId = tweetLikeValue.getTweetLiketId();
+			tweetLikeId = tweetLikeList.size();
 			if (tweetLikeValue.getUserName().equals(username) && tweetLikeValue.getTweetId() == id) {
 				userAlreadyExistsFlag = true;
 				tweetunlikeId = tweetLikeValue.getTweetLiketId();
@@ -167,45 +172,51 @@ public class TweetsServiceImpl implements TweetsService {
 					tweetsLikes.setTweetId(id);
 					tweetsLikes.setTweetLiketId(tweetLikeId + 1);
 					tweetsLikes.setUserName(username);
-					likeRepository.save(tweetsLikes);
-					List<TweetLikeEntity> tweetLikeList1 = likeRepository.findAll();
-					for(TweetLikeEntity likeValue: tweetLikeList1) {
-						if(likeValue.getTweetId() == id) {
-							tweetLikeCount = tweetLikeCount+1;
+					likeRepository.tweetLikeSaveDetails(tweetsLikes);
+					List<TweetLikeEntity> tweetLikeList1 = likeRepository.tweetLikeFindALLDetails();
+					for (TweetLikeEntity likeValue : tweetLikeList1) {
+						if (likeValue.getTweetId() == id) {
+							tweetLikeCount = tweetLikeCount + 1;
 						}
-							System.out.println(tweetLikeCount);
+						System.out.println(tweetLikeCount);
 					}
-					
-					List<TweetEntity> tweetlist = tweetsRepository.findAll();
+
+					List<TweetEntity> tweetlist = tweetsRepository.tweetFindALLDetails();
 					for (TweetEntity tweetValue : tweetlist) {
-						if(tweetValue.getTweetId() == id) {
+						if (tweetValue.getTweetId() == id) {
 							System.out.println(tweetLikeCount);
 							tweetValue.setLikeTweetsCount(tweetLikeCount);
-							tweetsRepository.save(tweetValue);
+							tweetsRepository.tweetSaveDetails(tweetValue);
 						}
-					
-					  }
+
+					}
 					return tweetsLikes;
 				}
 			} else {
-				likeRepository.deleteById(tweetunlikeId);
-				List<TweetLikeEntity> tweetLikeList1 = likeRepository.findAll();
-				for(TweetLikeEntity likeValue: tweetLikeList1) {
-					if(likeValue.getTweetId() == id) {
-						tweetDislikeCount = tweetDislikeCount+1;
+				// likeRepository.deleteById(tweetunlikeId);
+				List<TweetLikeEntity> tweetLikeValue = likeRepository.tweetLikeFindALLDetails();
+				for (TweetLikeEntity tweetLikeVal : tweetLikeValue) {
+					if (tweetLikeVal.getTweetId() == tweetunlikeId) {
+						likeRepository.deleteById(tweetLikeVal);
 					}
-						System.out.println(tweetDislikeCount);
 				}
-				
-				List<TweetEntity> tweetlist = tweetsRepository.findAll();
+				List<TweetLikeEntity> tweetLikeList1 = likeRepository.tweetLikeFindALLDetails();
+				for (TweetLikeEntity likeValue : tweetLikeList1) {
+					if (likeValue.getTweetId() == id) {
+						tweetDislikeCount = tweetDislikeCount + 1;
+					}
+					System.out.println(tweetDislikeCount);
+				}
+
+				List<TweetEntity> tweetlist = tweetsRepository.tweetFindALLDetails();
 				for (TweetEntity tweetValue : tweetlist) {
-					if(tweetValue.getTweetId() == id) {
+					if (tweetValue.getTweetId() == id) {
 						System.out.println(tweetDislikeCount);
 						tweetValue.setLikeTweetsCount(tweetDislikeCount);
-						tweetsRepository.save(tweetValue);
+						tweetsRepository.tweetSaveDetails(tweetValue);
 					}
-				
-				 }
+
+				}
 				return tweetsLikes;
 			}
 		} catch (Exception e) {
@@ -219,16 +230,18 @@ public class TweetsServiceImpl implements TweetsService {
 		int tweetCommentedId = 0;
 		int tweetUnCommentedId = 0;
 		int tweetCommentCount = 0;
+		int tweetUnCommentCount = 0;
 		boolean userAlreadyExistsFlag = false;
-		List<TweetCommentEnitiy> tweetCommentList = commentRepository.findAll();
+		List<TweetCommentEnitiy> tweetCommentList = commentRepository.tweetCommentFindALLDetails();
 		for (TweetCommentEnitiy tweetCommentValue : tweetCommentList) {
-			tweetCommentedId = tweetCommentValue.getTweetCommentId();
+			tweetCommentedId = 0;
+			tweetCommentedId = tweetCommentList.size();
 			System.out.println(tweetCommentValue.getUserName() + " - " + tweetCommentValue.getTweetId());
-			if (tweetCommentValue.getUserName().equals(username) && tweetCommentValue.getTweetId() == id) {
-				userAlreadyExistsFlag = true;
-				tweetUnCommentedId = tweetCommentValue.getTweetCommentId();
-				break;
-			}
+//			if (tweetCommentValue.getUserName().equals(username) && tweetCommentValue.getTweetId() == id) {
+//				userAlreadyExistsFlag = true;
+//				tweetUnCommentedId = tweetCommentValue.getTweetCommentId();
+//				break;
+//			}
 		}
 		try {
 			if (tweetsComment.getComment() != null) {
@@ -236,44 +249,49 @@ public class TweetsServiceImpl implements TweetsService {
 					tweetsComment.setTweetId(id);
 					tweetsComment.setTweetCommentId(tweetCommentedId + 1);
 					tweetsComment.setUserName(username);
-					commentRepository.save(tweetsComment);
-					System.out.println("count"+tweetsComment);
-					List<TweetCommentEnitiy> tweetCommentList1 = commentRepository.findAll();
+					commentRepository.tweetCommentSaveDetails(tweetsComment);
+					System.out.println("count" + tweetsComment);
+					List<TweetCommentEnitiy> tweetCommentList1 = commentRepository.tweetCommentFindALLDetails();
 					for (TweetCommentEnitiy tweetCommentValue : tweetCommentList1) {
 						if (tweetCommentValue.getTweetId() == id) {
-							tweetCommentCount = tweetCommentCount+1;
-							System.out.println("count1comment"+tweetCommentCount);
+							tweetCommentCount = tweetCommentCount + 1;
+							System.out.println("count1comment" + tweetCommentCount);
 						}
 					}
-					List<TweetEntity> tweetList = tweetsRepository.findAll();
+					List<TweetEntity> tweetList = tweetsRepository.tweetFindALLDetails();
 					for (TweetEntity tweetValue : tweetList) {
-						if(tweetValue.getTweetId() == id) {
+						if (tweetValue.getTweetId() == id) {
 							System.out.println(tweetCommentCount);
 							tweetValue.setCommentTweetsCount(tweetCommentCount);
-							System.out.println("count2com"+tweetCommentCount);
-							tweetsRepository.save(tweetValue);
+							System.out.println("count2com" + tweetCommentCount);
+							tweetsRepository.tweetSaveDetails(tweetValue);
 						}
-					  }
+					}
 					return tweetsComment;
 				}
 
 			} else {
-
-				commentRepository.deleteById(tweetUnCommentedId);
-				List<TweetCommentEnitiy> tweetCommentList1 = commentRepository.findAll();
-				for (TweetCommentEnitiy tweetCommentValue : tweetCommentList1) {
-					if (tweetCommentValue.getTweetId() == id) {
-						tweetCommentCount = tweetCommentCount+1;
+				// commentRepository.deleteById(tweetUnCommentedId);
+				List<TweetCommentEnitiy> tweetCommValue = commentRepository.tweetCommentFindALLDetails();
+				for (TweetCommentEnitiy tweetVal : tweetCommValue) {
+					if (tweetVal.getTweetId() == id) {
+						commentRepository.deleteById(tweetVal);
 					}
 				}
-				List<TweetEntity> tweetList = tweetsRepository.findAll();
-				for (TweetEntity tweetValue : tweetList) {
-					if(tweetValue.getTweetId() == id) {
-						System.out.println("final"+tweetCommentCount);
-						tweetValue.setCommentTweetsCount(tweetCommentCount);
-						tweetsRepository.save(tweetValue);
+				List<TweetCommentEnitiy> tweetCommentList1 = commentRepository.tweetCommentFindALLDetails();
+				for (TweetCommentEnitiy tweetCommentValue : tweetCommentList1) {
+					if (tweetCommentValue.getTweetId() == id) {
+						tweetUnCommentCount = tweetUnCommentCount + 1;
 					}
-				  }
+				}
+				List<TweetEntity> tweetList = tweetsRepository.tweetFindALLDetails();
+				for (TweetEntity tweetValue : tweetList) {
+					if (tweetValue.getTweetId() == id) {
+						System.out.println("final" + tweetUnCommentCount);
+						tweetValue.setCommentTweetsCount(tweetUnCommentCount);
+						tweetsRepository.tweetSaveDetails(tweetValue);
+					}
+				}
 				return tweetsComment;
 
 			}
@@ -286,18 +304,18 @@ public class TweetsServiceImpl implements TweetsService {
 	@Override
 	public List<TweetLikeEntity> getALLLikeTweets() throws ErrorException {
 		try {
-			return likeRepository.findAll();
+			return likeRepository.tweetLikeFindALLDetails();
 
 		} catch (Exception e) {
 			throw new ErrorException(e.getMessage(), MessageConstants.FETCH_SERVICE_ERROR,
 					MessageConstants.GET_ALL_TWEETS);
 		}
 	}
-	
+
 	@Override
 	public List<TweetCommentEnitiy> getALLCommentsTweets() throws ErrorException {
 		try {
-			return commentRepository.findAll();
+			return commentRepository.tweetCommentFindALLDetails();
 
 		} catch (Exception e) {
 			throw new ErrorException(e.getMessage(), MessageConstants.FETCH_SERVICE_ERROR,

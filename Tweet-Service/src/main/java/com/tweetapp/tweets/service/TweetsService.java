@@ -1,7 +1,7 @@
 package com.tweetapp.tweets.service;
 
 import java.util.List;
-import java.util.Optional;
+
 
 import com.tweetapp.tweets.entity.TweetCommentEnitiy;
 import com.tweetapp.tweets.entity.TweetEntity;
@@ -12,11 +12,11 @@ public interface TweetsService {
 
 	public List<TweetEntity> getALLTweets() throws ErrorException;
 
-	public void deleteTweetById(int id) throws ErrorException;
+	public void deleteTweetById(int id,String tweet) throws ErrorException;
 
 	public TweetEntity saveTweetDetails(TweetEntity tweets, String username, String action, int id) throws ErrorException;
 
-	public Optional<TweetEntity> getTweetsByUserName(String username) throws ErrorException;
+	public List<TweetEntity> getTweetsByUserName(String username) throws ErrorException;
 
 	public TweetLikeEntity saveLikeTweetDetails(TweetLikeEntity tweetsLikes, String username, int id) throws ErrorException;
 

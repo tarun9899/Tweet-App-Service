@@ -1,20 +1,34 @@
 package com.tweetapp.tweets.entity;
 
-import java.util.Date;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.annotation.Id;
+//import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "UserTable")
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
+
+//@Document(collection = "UserTable")
+
+@DynamoDBTable(tableName = "UserTable")
 public class UserEntity {
-	@Id
+	//@Id
+	@DynamoDBHashKey
 	public int userId;
+	@DynamoDBAttribute
 	public String userName;
+	@DynamoDBAttribute
 	public String firstName;
+	@DynamoDBAttribute
 	public String lastName;
+	@DynamoDBAttribute
 	public int age;
-	public Date dateOfBirth;
+	@DynamoDBAttribute
+	public String dateOfBirth;
+	@DynamoDBAttribute
 	public String password;
+	@DynamoDBAttribute
 	public String confirmPassword;
 
 	public int getUserId() {
@@ -57,11 +71,11 @@ public class UserEntity {
 		this.age = age;
 	}
 
-	public Date getDateOfBirth() {
+	public String getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 

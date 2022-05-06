@@ -1,8 +1,6 @@
 package com.tweetapp.tweets.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,8 @@ import com.tweetapp.tweets.exception.ErrorException;
 @Service
 public class TweetUserServiceImpl implements TweetUserService {
 
+	
+	
 	@Autowired
 	public TweetUserRepository userRepository;
 
@@ -33,7 +33,7 @@ public class TweetUserServiceImpl implements TweetUserService {
 			if (!user.getUserName().isEmpty()) {
 				List<UserEntity> userList = getALLRegisteredUser();
 				for (UserEntity us : userList) {
-					updateUserId = us.getUserId();
+					updateUserId = userList.size();
 					if (us.getUserName().equals(user.getUserName())) {
 						userAlreadyExists = true;
 						break;
@@ -42,7 +42,7 @@ public class TweetUserServiceImpl implements TweetUserService {
 				}
 				if (!userAlreadyExists) {
 					user.setUserId(updateUserId + userIdCount);
-					userRepository.save(user);
+					userRepository.userSaveDetails(user);
 					return messageService.messageDetails(MessageConstants.LOGIN_SUCCESSFULLY_MESSAGE, 200);
 				} else {
 					return messageService.messageDetails(MessageConstants.USER_NAME_ALREADY_EXISTS, 400);
@@ -59,7 +59,7 @@ public class TweetUserServiceImpl implements TweetUserService {
 	@Override
 	public List<UserEntity> getALLRegisteredUser() throws ErrorException {
 		try {
-			return userRepository.findAll();
+			return userRepository.userFindALLDetails();
 		} catch (Exception e) {
 			throw new ErrorException(e.getMessage(), MessageConstants.FETCH_SERVICE_ERROR,
 					MessageConstants.GET_ALL_REGISTERED_USER);
@@ -74,7 +74,7 @@ public class TweetUserServiceImpl implements TweetUserService {
 				if (users.getUserName().equals(username)) {
 					users.setPassword(password.getPassword());
 					users.setConfirmPassword(password.getPassword());
-					userRepository.save(users);
+					userRepository.userSaveDetails(users);
 					return messageService.messageDetails(MessageConstants.LOGIN_SUCCESSFULLY_MESSAGE, 200);
 				}
 			}
@@ -102,12 +102,12 @@ public class TweetUserServiceImpl implements TweetUserService {
 	}
 
 	@Override
-	public Optional<UserEntity> getUserDetailsByName(String username) throws ErrorException {
+	public UserEntity getUserDetailsByName(String username) throws ErrorException {
 		try {
 			List<UserEntity> userList = getALLRegisteredUser();
 			for (UserEntity users : userList) {
 				if (username.equals(users.getUserName())) {
-					Optional<UserEntity> userIdList = userRepository.findById(users.getUserId());
+					UserEntity userIdList = userRepository.userFindByIdDetails(users);
 					return  userIdList;
 				}
 			}

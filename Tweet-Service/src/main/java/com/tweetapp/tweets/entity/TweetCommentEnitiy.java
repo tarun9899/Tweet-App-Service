@@ -1,15 +1,20 @@
 package com.tweetapp.tweets.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-@Document(collection = "TweetsCommentTable")
+@DynamoDBTable(tableName = "TweetCommentTable")
 public class TweetCommentEnitiy {
-		@Id
+	    @DynamoDBHashKey
 		public int tweetCommentId;
+	    @DynamoDBAttribute
 		public int tweetId;
+	    @DynamoDBAttribute
 		public String userName;
+	    @DynamoDBAttribute
 		public String comment;
+	    
 		public int getTweetCommentId() {
 			return tweetCommentId;
 		}

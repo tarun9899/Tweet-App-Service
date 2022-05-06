@@ -1,16 +1,20 @@
 package com.tweetapp.tweets.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-
-@Document(collection = "TweetsLikeTable")
+@DynamoDBTable(tableName = "TweetLikeTable")
 public class TweetLikeEntity {
-	@Id
+	@DynamoDBHashKey
 	public int tweetLiketId;
+	@DynamoDBAttribute
 	public int tweetId;
+	@DynamoDBAttribute
 	public String userName;
+	@DynamoDBAttribute
 	public boolean tweetLikes;
+	
 	public int getTweetLiketId() {
 		return tweetLiketId;
 	}

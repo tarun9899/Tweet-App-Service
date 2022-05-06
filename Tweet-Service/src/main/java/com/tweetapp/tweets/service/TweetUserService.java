@@ -17,5 +17,5 @@ public interface TweetUserService {
 
 	public MessageDTO getLoginUserDetails(UserEntity user) throws ErrorException;
 
-	public Optional<UserEntity> getUserDetailsByName(String username) throws ErrorException;
+	public UserEntity getUserDetailsByName(String username) throws ErrorException;
 }

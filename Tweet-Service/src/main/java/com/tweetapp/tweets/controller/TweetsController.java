@@ -25,6 +25,7 @@ import com.tweetapp.tweets.service.TweetsService;
 
 @RestController
 @RequestMapping("/api/v1.0/tweets/")
+@CrossOrigin(origins="*")
 public class TweetsController {
 
 	@Autowired
@@ -36,7 +37,7 @@ public class TweetsController {
 	@Autowired
 	public MessageServiceResponse messageService;
 	
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@GetMapping(value = "/all")
 	public ResponseEntity<?> getAllTweets() throws ErrorException {
 		try {
@@ -47,7 +48,7 @@ public class TweetsController {
 		}
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@GetMapping(value = "/{username}")
 	public ResponseEntity<?> getAllTweetsByUserName(@PathVariable String username) throws ErrorException {
 		try {
@@ -58,7 +59,7 @@ public class TweetsController {
 		}
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(value = "/{username}/add")
 	public TweetEntity addTweet(@RequestBody TweetEntity tweets, @PathVariable String username) throws ErrorException {
 		try {
@@ -68,7 +69,7 @@ public class TweetsController {
 		}
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@PutMapping(value = "/{username}/update/{id}")
 	public TweetEntity updateTweet(@RequestBody TweetEntity tweets, @PathVariable String username, @PathVariable int id)
 			throws ErrorException {
@@ -80,12 +81,12 @@ public class TweetsController {
 		}
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
-	@DeleteMapping(value = "/{username}/delete/{id}")
-	public MessageDTO deleteTweet(@PathVariable String username, @PathVariable int id) throws ErrorException {
+	//@CrossOrigin(origins="http://localhost:4200")
+	@DeleteMapping(value = "/{username}/delete/{id}/{tweet}")
+	public MessageDTO deleteTweet(@PathVariable String username, @PathVariable int id,@PathVariable String tweet) throws ErrorException {
 		MessageDTO message = new MessageDTO();
 		try {
-			tweetsService.deleteTweetById(id);
+			tweetsService.deleteTweetById(id,tweet);
 			message.setSuccessMessage("Tweet Deleted Successfully");
 			message.setMessageCode(200);
 		} catch (Exception e) {
@@ -95,7 +96,7 @@ public class TweetsController {
 		return message;
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@PutMapping(value = "/{username}/like/{id}")
 	public TweetLikeEntity likeTweet(@RequestBody TweetLikeEntity tweetsLikes, @PathVariable String username, @PathVariable int id)
 			throws ErrorException {
@@ -107,7 +108,7 @@ public class TweetsController {
 
 	}
 
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@PostMapping(value = "/{username}/reply/{id}")
 	public TweetCommentEnitiy replyTweet(@RequestBody TweetCommentEnitiy tweets, @PathVariable String username, @PathVariable int id)
 			throws ErrorException {
@@ -120,7 +121,7 @@ public class TweetsController {
 
 	}
 	
-	@CrossOrigin(origins="http://localhost:4200")
+	//@CrossOrigin(origins="http://localhost:4200")
 	@GetMapping(value = "/likes/all")
 	public ResponseEntity<?> getAllTweetsBylike() throws ErrorException {
 		try {
