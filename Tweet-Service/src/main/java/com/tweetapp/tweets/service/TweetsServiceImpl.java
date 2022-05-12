@@ -56,20 +56,25 @@ public class TweetsServiceImpl implements TweetsService {
 	public List<TweetEntity> getTweetsByUserName(String username) throws ErrorException {
 
 		try {
+			List<TweetEntity> tweetList = new ArrayList<TweetEntity>();
+			List<TweetEntity> tweetsByUserList = new ArrayList<TweetEntity>();
 			List<UserEntity> userList = tweetUserService.getALLRegisteredUser();
 			for (UserEntity users : userList) {
 				if (users.getUserName().equals(username)) {
-					return tweetsRepository.tweetFindALLDetails();
-				}
-				else {
-					List<TweetEntity> array = new ArrayList<>();
+					
+					tweetList.addAll(tweetsRepository.tweetFindALLDetails());
+					for(TweetEntity tweets : tweetList) {
+						if(tweets.getUserId() == users.getUserId()) {
+							 tweetsByUserList.add(tweets);
+						}
+					}	
 				}
 			}
+			return tweetsByUserList;
 		} catch (Exception e) {
 			throw new ErrorException(e.getMessage(), MessageConstants.FETCH_SERVICE_ERROR,
 					MessageConstants.GET_ALL_TWEETS_BY_USER_NAME);
 		}
-		return null;
 	}
 
 	@Override
