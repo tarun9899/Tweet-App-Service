@@ -198,10 +198,10 @@ public class TweetsServiceImpl implements TweetsService {
 					return tweetsLikes;
 				}
 			} else {
-				// likeRepository.deleteById(tweetunlikeId);
+				//likeRepository.deleteById(tweetunlikeId);
 				List<TweetLikeEntity> tweetLikeValue = likeRepository.tweetLikeFindALLDetails();
 				for (TweetLikeEntity tweetLikeVal : tweetLikeValue) {
-					if (tweetLikeVal.getTweetId() == tweetunlikeId) {
+					if (tweetLikeVal.getTweetId() == id && tweetLikeVal.getUserName().equals(username)) {
 						likeRepository.deleteById(tweetLikeVal);
 					}
 				}
